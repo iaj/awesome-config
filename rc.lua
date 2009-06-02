@@ -80,18 +80,20 @@ shifty.config.tags = {
 ["jack"]    = { position = 0, exclusive = true, mwfact = 0.25307, nmaster = 2, screen = LCD,
                 icon_only = true, icon = "/home/iamjay/.config/awesome/icons/audio-x-generic.png",
                 layout = awful.layout.suit.floating,                                                    },
-["term"]    = { position = 2, exclusive = true,  screen = LCD,                                          },
-["www"]     = { position = 3, exclusive = true,  screen = LCD, sweep_delay = 2,                        },
+["term"]    = { position = 2, exclusive = true,  screen = LCD, spawn='urxvt'                            },
+["www"]     = { position = 3, exclusive = true,  screen = LCD, sweep_delay = 2,                         },
 ["fb"]      = { position = 9, exclusive = true,                                                         },
 ["dir"]     = { rel_index = 1, exclusive = false,                                                       },
 --["gqview"]  = { position = 5, spawn = 'gqview', icon_only = true, icon="/usr/share/pixmaps/gqview.png"  },
-["eclipse"]  = { position = 8, spawn = 'eclipse-3.4', icon_only = true, icon="/usr/share/pixmaps/gnome-mnemonic.png", layout = awful.layout.suit.floating,  },
+["eclipse"]  = { position = 8, spawn = '/home/iamjay/eclipse/eclipse', icon_only = true, icon="/usr/share/pixmaps/gnome-laptop.png", layout = awful.layout.suit.floating,  },
 ["gimp"]    = { spawn = "gimp", mwfact = 0.18, icon = "/usr/share/icons/hicolor/16x16/apps/gimp.png",
-                layout = awful.layout.suit.tile, icon_only = true, sweep_delay = 2, exclusive = true,   },
+                layout = awful.layout.suit.floating, icon_only = true, sweep_delay = 2, exclusive = true, position=7  },
 ["xev"]     = { position = 0, spawn = "urxvtc -name xev -e xev", layout = awful.layout.suit.tile,       },
 ["live"]    = { icon = "/home/iamjay/live.png", layout = awful.layout.suit.floating, sweep_delay = 2,
                 icon_only = true,                                                                       },
 ["sql"]     = { layout = awful.layout.suit.tile.left                                                    },
+["vim"]     = { position = 4,
+                spawn = "gvim",       },
 ["irc"]     = { position = 1,
                 spawn = "urxvt -name irssi -e screen -xRR irssi irssi", icon_only = true, icon="/usr/share/pixmaps/gnome-irc.png",         },
 ["mocp"]     = { position = 6,
@@ -148,10 +150,10 @@ shifty.config.apps = {
     { match = { "recordMyDesktop", "Skype", "QQQjackctl", "dupa", "MPlayer", "xmag", "gcolor2"
                                                     },  float = true,                                 },
     -- intruders
-    { match = { "^dialog$", "xmag", "gcolor2", "dupa", "^Download$", 
+    { match = { "^dialog$", "xmag", "gcolor2", "dupa", "^Download$",
                                                     },  intrusive = true,                             },
     -- all
-    { match = { "",                                 },  honorsizehints = false,  
+    { match = { "",                                 },  honorsizehints = false,
                                                         buttons = join(
                                                             awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
                                                             awful.button({ "Mod1" }, 1, function (c) awful.mouse.client.move() end),
@@ -1268,7 +1270,8 @@ globalkeys = join(
   awful.key({ modkey          },   "l", awful.tag.viewnext, nil, "next tag"),
   awful.key({ modkey, "Shift"   }, "h",    shifty.shift_prev, nil, "move tag left" ),
   awful.key({ modkey, "Shift"   }, "l", shifty.shift_next, nil, "move tag right"),
-  awful.key({ modkey }, 'Return', function () terminal() end, nil, "terminal"),
+  --awful.key({ modkey }, 'Return', function () terminal() end, nil, "terminal"),
+  awful.key({ modkey, "Shift" }, 'Return', function () terminal() end, nil, "terminal"),
   awful.key({ modkey, "Shift" }, 'Return', function () terminal("-name term") end, nil, "terminal"),
 
   awful.key({ modkey            }, "t",           function() shifty.add({ rel_index = 1 }) end, nil, "new tag"),
@@ -1292,9 +1295,9 @@ globalkeys = join(
 	awful.key({ modkey, "Shift" }, 'z', function () awful.util.spawn('amixer set Master 2-%') end),
 	awful.key({ modkey, "Shift" }, 'a', function () awful.util.spawn('amixer set Master 2+%') end),
 	-- Media player controls.
-	awful.key({ modkey, 'Shift' }, ']', function () awful.util.spawn('mocp -r') end),
+	awful.key({ modkey, 'Shift' }, ']', function () awful.util.spawn('mocp -f') end),
 	awful.key({ modkey, 'Shift' }, ';', function () awful.util.spawn('mocp -G') end),
-	awful.key({ modkey, 'Shift' }, '[', function () awful.util.spawn('mocp -f') end),
+	awful.key({ modkey, 'Shift' }, '[', function () awful.util.spawn('mocp -r') end),
   --
 --+---------------------------------------------------------------+
 --|    VIM-Mode behaviour - Makes you able to switch screens with |
@@ -1346,11 +1349,13 @@ globalkeys = join(
   awful.key({ modkey, "Shift"   }, "space",       function () awful.layout.inc(layouts, -1) end),
 --}}}
   awful.key({ modkey }, "i", function () awful.tag.viewonly(shifty.getpos(1)) end),
-  awful.key({ modkey }, "k", function () awful.tag.viewonly(shifty.getpos(2)) end),
+  awful.key({ modkey }, "k", function () awful.tag.viewonly(shifty.getpos(4)) end),
+  awful.key({ modkey }, "Return", function () awful.tag.viewonly(shifty.getpos(2)) end),
   awful.key({ modkey }, "o", function () awful.tag.viewonly(shifty.getpos(8)) end),
   awful.key({ modkey }, ";", function () awful.tag.viewonly(shifty.getpos(6)) end),
   awful.key({ modkey }, "u", function () awful.tag.viewonly(shifty.getpos(5)) end),
   awful.key({ modkey }, "j", function () awful.tag.viewonly(shifty.getpos(3)) end),
+  awful.key({ modkey }, "p", function () awful.tag.viewonly(shifty.getpos(7)) end),
 
 -- {{{ bindings / global / prompts / run
   awful.key({ "Mod1" }, "space",
@@ -1470,44 +1475,44 @@ globalkeys = join(
 -- {{{ bindings / global / prompts / kill
   awful.key({ modkey, 'Control' }, "k",
   function ()
-	  info = true
-	  awful.prompt.run({
+    info = true
+    awful.prompt.run({
       fg_cursor = "#FF4F4F", bg_cursor = beautiful.bg_normal, ul_cursor="single", 
       text = paste, selectall = true, prompt = "<span color='#FF4F4F'>Kill:</span> " 
     }, 
     mypromptbox,
-	  function(line)
+    function(line)
       local name,pid = line:match("(%a+) (%d+)")
       awful.util.spawn("kill " .. pid, false)
-	  end,
+    end,
     function (cmd, cur_pos, ncomp)
-        local ps = {}
-        local g = io.popen("ps hxuc") -- | awk '{print $11 \" \" $2}'")
-        for line in g:lines() do
-              local out = splitbywhitespace(line)
-            table.insert(ps, out[11] .. " " .. out[2])
+      local ps = {}
+      local g = io.popen("ps hxuc") -- | awk '{print $11 \" \" $2}'")
+      for line in g:lines() do
+        local out = splitbywhitespace(line)
+        table.insert(ps, out[11] .. " " .. out[2])
 
-        end
-        g:close()
-    if cur_pos ~= #cmd + 1 and cmd:sub(cur_pos, cur_pos) ~= " " then
+      end
+      g:close()
+      if cur_pos ~= #cmd + 1 and cmd:sub(cur_pos, cur_pos) ~= " " then
         return cmd, cur_pos
-    end
-               local matches = {}
-            for i, j in ipairs(ps) do
-                if ps[i]:find("^" .. cmd:sub(1, cur_pos)) then
-                        table.insert(matches, ps[i])
-                end
-            end
-        if #matches == 0 then return cmd, cur_pos end
- while ncomp > #matches do ncomp = ncomp - #matches end
-
-    -- return match and position
-    return matches[ncomp], cur_pos
-
- 
+      end
+      local matches = {}
+      for i, j in ipairs(ps) do
+        if ps[i]:find("^" .. cmd:sub(1, cur_pos)) then
+          table.insert(matches, ps[i])
         end
-        
-        , awful.util.getdir("cache") .. "/kill") 
+      end
+      if #matches == 0 then return cmd, cur_pos end
+      while ncomp > #matches do ncomp = ncomp - #matches end
+
+      -- return match and position
+      return matches[ncomp], cur_pos
+
+
+    end
+
+    , awful.util.getdir("cache") .. "/kill") 
   end, nil, "kill"),
 -- }}}
 
@@ -1700,6 +1705,10 @@ awful.hooks.arrange.register(function (screen)
     end
 end)
 -- }}}
+--awful.hooks.manage.register(function (c)
+  --awful.placement.centered(c, c.transient_for)
+--end)
+
 
 --{{{ hooks / timers
 awful.hooks.timer.register(1, hook_1s)
